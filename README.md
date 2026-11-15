@@ -1,4 +1,4 @@
-# Aura Color Match ✨ - Next-Gen Cosmetic AI & Personal Color Analyzer
+# SkinPalette ✨ - AI Skin & Personal Color Analyzer
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](http://localhost:8501)
 [![Python 3.10 | 3.11 | 3.12](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -8,7 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Academic Project](https://img.shields.io/badge/Mata%20Kuliah-Farmasi%20AI-4CAF50)](#)
 
-> **Aura Color Match** adalah aplikasi web kecerdasan buatan terpadu untuk menganalisis karakteristik warna kulit manusia secara kuantitatif berbasis ruang warna **CIELAB ($L^*a^*b^*$)**, mengklasifikasikan jenis kulit (Oily/Dry/Normal), menentukan **Personal Color (4 Musim)**, serta menghasilkan **rekomendasi formulasi kosmetik farmasetik** (basis sediaan, bahan aktif terapeutik, dan rasio pigmen foundation).
+> **SkinPalette** is a private skin and color analyzer that runs right in your browser (powered by **DermaTone AI: Skin & Personal Color Analyzer**). Upload a selfie to discover your skin tone, undertone, skin type, and personal color season, then get a flattering color palette plus skincare formulation and foundation shade guidance. Your photo never leaves your device. Cosmetic guidance only, not medical advice.
 
 ---
 
@@ -30,7 +30,7 @@
 - Pengukuran kontras relatif wajah-rambut ($\Delta L^* = L^*_{\text{kulit}} - L^*_{\text{rambut}}$).
 - Pengelompokan 4 musim: **Spring** (Warm & Bright), **Summer** (Cool & Soft), **Autumn** (Warm & Deep), dan **Winter** (Cool & Vivid).
 - Dilengkapi **Mode Hijab** (pengukuran kontras dialihkan ke alis) dan opsi **Input Manual Warna Rambut**.
-- Rekomendasi palet warna swatch interaktif dalam kode HEX untuk busana, lipstik, dan blush on terbaik.
+- Rekomendasi palet warna swatch interaktif dalam kode HEX untuk busana, lipstik, dan blush on terbaik (6 warna rekomendasi & 3 warna dihindari).
 
 ### 4. 🧪 Klasifikasi Jenis Kulit Modular (CNN & Heuristik)
 - **Arsitektur Modular:** Siap memuat model deep learning TensorFlow/Keras (`models/skin_type_cnn.h5`).
@@ -40,7 +40,7 @@
   - Slider kalibrasi ambang batas sensitivitas di sidebar untuk adaptasi terhadap kamera pengguna.
 
 ### 5. 🧴 Rekomendasi Formulasi Skincare Farmasetik
-- **Basis Sediaan:** Gel hidrofilik / emulsi ringan O/W bebas minyak (Oily), Emulsi W/O kaya oklusif (Dry), dan Emulsi O/W seimbang (Normal).
+- **Basis Sediaan:** Gel hidrofilik / emulsi ringan O/W bebas minyak (Oily), Emulsi W/O kaya oklusif (Dry), dan Emulsi O/W seimbang (Normal/Combination).
 - **Rasional Farmasetik:** Menjelaskan pencegahan Transepidermal Water Loss (TEWL), fungsi sawar lipid lamellar, dan regulasi kelenjar sebasea.
 - **Bahan Aktif Terapeutik:** Konsentrasi standar farmasi seperti Niacinamide 2-5%, Asam Salisilat (BHA) 0.5-2%, Zinc PCA 1%, Kompleks Ceramide $\approx 3:1:1$, Urea 2-5%, Glycerin, dan Panthenol.
 - **Eksipien & Larangan:** Rekomendasi pembawa ramah kulit serta daftar bahan komedogenik atau iritan yang wajib dihindari.
@@ -87,27 +87,27 @@ Pra-pemrosesan: Koreksi EXIF & Auto-Resize 1024 px
         ▼
 Deteksi Landmark: MediaPipe Face Mesh (468/478 Titik)
         │
-        ├─► Ekstraksi ROI Kulit (Dahi & Kedua Pipi, Skala 0.8)
-        │   └─ Masking Pengecualian: Mata, Alis, Bibir (Dilatasi 7x7)
+        ├──► Ekstraksi ROI Kulit (Dahi & Kedua Pipi, Skala 0.8)
+        │   └── Masking Pengecualian: Mata, Alis, Bibir (Dilatasi 7x7)
         │
         ▼
 Normalisasi Cahaya: Gray World White Balance (0.6 - 1.6)
         │
-        ├─► Ekstraksi Nilai Warna: CIELAB (L*, a*, b* Median)
-        │        ├─ Klasifikasi Skintone (L*)
-        │        ├─ Klasifikasi Undertone (b*/a* & Hue)
-        │        ├─ Pengukuran Kontras Rambut-Kulit (Mode Hijab/Manual)
-        │        └─ Penentuan Personal Color (Spring/Summer/Autumn/Winter)
+        ├──► Ekstraksi Nilai Warna: CIELAB (L*, a*, b* Median)
+        │        ├── Klasifikasi Skintone (L*)
+        │        ├── Klasifikasi Undertone (b*/a* & Hue)
+        │        ├── Pengukuran Kontras Rambut-Kulit (Mode Hijab/Manual)
+        │        └── Penentuan Personal Color (Spring/Summer/Autumn/Winter)
         │
-        └─► Klasifikasi Jenis Kulit (predict_skin_type)
-                 ├─ Model CNN Deep Learning (.h5) [Bila Ada]
-                 └─ Fallback: Heuristik Kilap Sebum & Kekasaran Laplacian
+        └──► Klasifikasi Jenis Kulit (predict_skin_type)
+                 ├── Model CNN Deep Learning (.h5) [Bila Ada]
+                 └── Fallback: Heuristik Kilap Sebum & Kekasaran Laplacian
         │
         ▼
 Sistem Formulasi Farmasi & Kosmetik
-  ├─ Skincare Terapeutik (Basis Sediaan, Bahan Aktif, Eksipien)
-  ├─ Pigmen Foundation (% b/b TiO2, FeO Yellow, Red, Black)
-  └─ Palet Warna HEX Interaktif (Busana, Lipstik, Blush On)
+  ├── Skincare Terapeutik (Basis Sediaan, Bahan Aktif, Eksipien)
+  ├── Pigmen Foundation (% b/b TiO2, FeO Yellow, Red, Black)
+  └── Palet Warna HEX Interaktif (Busana, Lipstik, Blush On)
         │
         ▼
 Antarmuka Interaktif Streamlit & Verifikasi Visual ROI
@@ -118,17 +118,18 @@ Antarmuka Interaktif Streamlit & Verifikasi Visual ROI
 ## 📁 Struktur Repositori
 
 ```text
-Aura-Color-Match/
+SkinPalette/
 ├── app.py                  # Aplikasi utama Streamlit modular
 ├── requirements.txt        # Dependensi pustaka Python
-├── PRD.md                  # Product Requirements Document (PRD v1.0)
+├── SkinPalette-PRD.md      # Product Requirements Document (SkinPalette PRD v1.0)
+├── PRD.md                  # PRD lengkap
 ├── BREAKDOWN_TUGAS.md      # Work Breakdown Structure (WBS)
 ├── README.md               # Dokumentasi utama proyek
 ├── CONTRIBUTING.md         # Panduan kontribusi
 ├── LICENSE                 # Lisensi MIT
 ├── .gitignore              # Pengabaian file cache & virtual environment
 ├── .gitattributes         # Konfigurasi normalisasi line-ending Git
-├── push-to-github.bat      # Skrip pembantu push Git untuk Windows
+├── PUSH_KE_GITHUB.bat      # Skrip pembantu push Git untuk Windows
 └── models/
     └── README.md           # Panduan penempatan model CNN Keras/TensorFlow
 ```
@@ -144,8 +145,8 @@ Aura-Color-Match/
 ### Langkah Menjalankan:
 ```bash
 # 1. Clone repositori ini
-git clone https://github.com/syifhaaulia643-lab/Aura-Color-Match.git
-cd Aura-Color-Match
+git clone https://github.com/syifhaaulia643-lab/SkinPalette.git
+cd SkinPalette
 
 # 2. Buat dan aktifkan lingkungan virtual
 python -m venv .venv
