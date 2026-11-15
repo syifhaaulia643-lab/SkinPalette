@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkinPalette ✨ - AI Skin & Personal Color Analyzer</title>
+  <meta name="description" content="Analisis warna kulit, undertone, personal color season, dan rekomendasi formulasi kosmetik farmasetik 100% on-device berbasis DermaTone AI.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <!-- External dependencies for MediaPipe, html2canvas, and jsPDF -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-background"></div>
+
+  <!-- Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand-group">
+        <span class="brand-icon">✨</span>
+        <div class="brand-text">
+          <span class="brand-title">SkinPalette</span>
+          <span class="brand-tag">DermaTone AI™ Engine</span>
+        </div>
+      </div>
+      <div class="nav-badges">
+        <span class="badge privacy-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          100% On-Device Privacy
+        </span>
+        <button id="btn-theme-info" class="btn-ghost-sm" title="Tentang Privasi & Sains">Tentang</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-badge">Analisis Kolorimetri Klinis-Kosmetik</div>
+      <h1 class="hero-title">Temukan Warna Personal & Sediaan Tepat Kulit Anda</h1>
+      <p class="hero-subtitle">
+        Analisis skintone, undertone, personal color season, dan formulasi farmasetik langsung di browser Anda. Foto diproses secara lokal di perangkat Anda tanpa pernah diunggah ke server.
+      </p>
+
+      <!-- Checklist Panduan Foto -->
+      <div class="guidelines-card">
+        <div class="guidelines-header">
+          <span class="icon-bulb">💡</span>
+          <strong>Panduan Pengambilan Foto Terbaik:</strong>
+        </div>
+        <div class="guidelines-grid">
+          <div class="guide-item">
+            <span class="check-icon">✓</span>
+            <span><strong>Cahaya Alami:</strong> Hadap ke arah jendela / cahaya alami merata.</span>
+          </div>
+          <div class="guide-item">
+            <span class="check-icon">✓</span>
+            <span><strong>Wajah Bersih:</strong> Hindari bedak padat atau makeup tebal.</span>
+          </div>
+          <div class="guide-item">
+            <span class="check-icon">✓</span>
+            <span><strong>Rambut Rapi:</strong> Singkap rambut agar dahi dan pipi terlihat jelas.</span>
+          </div>
+          <div class="guide-item">
+            <span class="check-icon">✓</span>
+            <span><strong>Lepas Kacamata:</strong> Hindari pantulan kilap pada lensa.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Capture & Upload Section -->
+    <section class="capture-section" id="capture-section">
+      <div class="input-card glass-panel">
+        <div class="tabs-header">
+          <button class="tab-btn active" id="tab-upload">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Unggah Foto Selfie
+          </button>
+          <button class="tab-btn" id="tab-webcam">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Gunakan Kamera Langsung
+          </button>
+        </div>
+
+        <!-- Panel 1: Upload File -->
+        <div class="tab-content" id="panel-upload">
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" style="display:none;">
+            <div class="drop-zone-content">
+              <div class="upload-icon-circle">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
+              </div>
+              <h3>Pilih atau Seret Foto ke Sini</h3>
+              <p>Mendukung format JPG, PNG, atau WebP (maks 15 MB)</p>
+              <button class="btn-primary" id="btn-browse-file">Pilih Berkas Foto</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Live Webcam -->
+        <div class="tab-content" id="panel-webcam" style="display:none;">
+          <div class="webcam-wrapper">
+            <div class="video-container">
+              <video id="webcam-video" autoplay playsinline muted></video>
+              <div class="face-oval-guide">
+                <div class="oval-indicator"></div>
+                <span class="guide-text">Posisikan wajah di dalam oval</span>
+              </div>
+              <div class="countdown-overlay" id="countdown-overlay" style="display:none;">3</div>
+            </div>
+            <div class="webcam-controls">
+              <button class="btn-primary" id="btn-snap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+                Ambil Foto (Hitung Mundur 3s)
+              </button>
+              <button class="btn-outline" id="btn-toggle-cam" style="display:none;">Ganti Kamera</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview & Landmark Mesh Toggle Panel -->
+        <div class="preview-panel" id="preview-panel" style="display:none;">
+          <div class="preview-header">
+            <h3>Konfirmasi Foto untuk Dianalisis</h3>
+            <div class="mesh-toggle-wrapper">
+              <label class="switch">
+                <input type="checkbox" id="toggle-mesh" checked>
+                <span class="slider round"></span>
+              </label>
+              <span class="toggle-label">Tampilkan Titik Sampling (ROI)</span>
+            </div>
+          </div>
+          <div class="preview-canvas-wrapper">
+            <canvas id="preview-canvas"></canvas>
+          </div>
+          <div class="preview-actions">
+            <button class="btn-primary btn-lg" id="btn-analyze">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="m16.24 16.24 2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="m4.93 19.07 2.83-2.83"/><path d="m16.24 7.76 2.83-2.83"/></svg>
+              Mulai Analisis DermaTone AI
+            </button>
+            <button class="btn-outline" id="btn-retake">Ambil Ulang Foto</button>
+          </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-bar-container" id="progress-container" style="display:none;">
+          <div class="progress-spinner"></div>
+          <div class="progress-info">
+            <h4 id="progress-stage-title">Mempersiapkan Deteksi Landmark Wajah...</h4>
+            <p id="progress-stage-desc">Mengidentifikasi 468 titik wajah dan mengisolasi area kulit.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="results-section" style="display:none;">
+      
+      <!-- Top Summary Card (Downloadable Element) -->
+      <div class="results-card glass-panel" id="summary-export-card">
+        
+        <div class="result-card-header">
+          <div class="result-card-title-group">
+            <span class="badge category-badge">Hasil Analisis Pribadi</span>
+            <h2>Kartu Profil Warna & Sediaan Kulit</h2>
+            <p class="timestamp-label" id="result-timestamp">Tanggal: 2026-11-15</p>
+          </div>
+          <div class="swatch-spotlight" id="swatch-spotlight">
+            <div class="swatch-circle" id="result-swatch-circle" style="background-color: #d1a88b;"></div>
+            <div class="swatch-data">
+              <span class="swatch-label">Skin Swatch</span>
+              <span class="swatch-hex" id="result-swatch-hex">#D1A88B</span>
+              <button class="btn-copy-hex" id="btn-copy-hex" title="Salin Kode HEX">Salin</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Metric Badges -->
+        <div class="metrics-grid">
+          <!-- 1. Skintone -->
+          <div class="metric-box">
+            <span class="metric-label">Skin Tone</span>
+            <span class="metric-value" id="val-skintone">Medium</span>
+            <div class="confidence-bar-bg">
+              <div class="confidence-fill" id="conf-skintone" style="width: 92%;"></div>
+            </div>
+            <span class="metric-sub" id="sub-skintone">Tingkat kecerahan L*: 58.4</span>
+          </div>
+
+          <!-- 2. Undertone -->
+          <div class="metric-box">
+            <span class="metric-label">Undertone</span>
+            <span class="metric-value" id="val-undertone">Neutral</span>
+            <div class="confidence-bar-bg">
+              <div class="confidence-fill" id="conf-undertone" style="width: 85%;"></div>
+            </div>
+            <span class="metric-sub" id="sub-undertone">Sudut Hue: 54.2° | Rasio b*/a*: 1.34</span>
+          </div>
+
+          <!-- 3. Skin Type -->
+          <div class="metric-box">
+            <span class="metric-label">Jenis Kulit (Estimasi)</span>
+            <span class="metric-value" id="val-skintype">Combination / Normal</span>
+            <div class="confidence-bar-bg">
+              <div class="confidence-fill" id="conf-skintype" style="width: 78%;"></div>
+            </div>
+            <span class="metric-sub" id="sub-skintype">Kilap Sebum T-zone: 4.8%</span>
+          </div>
+
+          <!-- 4. Season -->
+          <div class="metric-box spotlight-season">
+            <span class="metric-label">Personal Color Season</span>
+            <span class="metric-value" id="val-season">Autumn</span>
+            <div class="confidence-bar-bg">
+              <div class="confidence-fill" id="conf-season" style="width: 88%;"></div>
+            </div>
+            <span class="metric-sub" id="sub-season">Warm, Rich & Muted Tone</span>
+          </div>
+        </div>
+
+        <!-- Detailed Colorimetry Disclosure -->
+        <div class="color-science-row">
+          <div class="science-tag">CIELAB D65 Standar:</div>
+          <span class="lab-pill">L*: <strong id="val-l">58.4</strong></span>
+          <span class="lab-pill">a*: <strong id="val-a">14.1</strong></span>
+          <span class="lab-pill">b*: <strong id="val-b">18.9</strong></span>
+          <span class="lab-pill">Kroma C*: <strong id="val-c">23.6</strong></span>
+          <span class="lab-pill">ITA: <strong id="val-ita">23.9°</strong></span>
+        </div>
+
+      </div>
+
+      <!-- Result Navigation Tabs -->
+      <div class="results-tabs-wrapper">
+        <div class="results-tabs">
+          <button class="res-tab-btn active" id="res-tab-palette">Palet Warna Rekomendasi (6 + 3)</button>
+          <button class="res-tab-btn" id="res-tab-formulation">Formulasi Skincare & Foundation Farmasetik</button>
+        </div>
+      </div>
+
+      <!-- Tab Content 1: Palette -->
+      <div class="res-content-panel" id="res-panel-palette">
+        <div class="palette-group glass-panel">
+          <div class="group-header">
+            <h3>🌟 6 Warna Terbaik untuk Anda (Recommended)</h3>
+            <p>Paling menyanjung penampilan Anda pada busana, hijab, lipstik, dan riasan wajah.</p>
+          </div>
+          <div class="swatches-grid" id="recommended-swatches">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <div class="palette-group glass-panel avoid-group">
+          <div class="group-header">
+            <h3>⚠️ 3 Warna yang Sebaiknya Dihindari (Avoid)</h3>
+            <p>Berpotensi membuat rona wajah tampak kusam, lelah, atau tidak harmonis.</p>
+          </div>
+          <div class="swatches-grid" id="avoid-swatches">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: Formulation -->
+      <div class="res-content-panel" id="res-panel-formulation" style="display:none;">
+        <div class="formulation-grid">
+          
+          <!-- Skincare Formulations -->
+          <div class="formulation-card glass-panel">
+            <div class="card-badge">Rekomendasi Farmasis</div>
+            <h3>🧴 Sediaan Skincare & Bahan Aktif Terapeutik</h3>
+            
+            <div class="formulation-item">
+              <span class="item-title">Basis Sediaan Rekomendasi:</span>
+              <p id="form-base-desc">Emulsi O/W ringan atau gel hidrasi ramah stratum korneum.</p>
+            </div>
+
+            <div class="formulation-item">
+              <span class="item-title">Bahan Aktif Farmasi Terpilih (% b/b):</span>
+              <ul class="actives-list" id="form-actives-list">
+                <!-- Injected via JS -->
+              </ul>
+            </div>
+
+            <div class="formulation-item">
+              <span class="item-title">Tekstur & Eksipien yang Dihindari:</span>
+              <p class="avoid-text" id="form-avoid-desc">Minyak mineral berat beroklusif tinggi dan alkohol rantai pendek denaturasi.</p>
+            </div>
+            
+            <div class="sunscreen-reminder">
+              <span class="sun-icon">☀️</span>
+              <span><strong>Wajib Harian:</strong> Gunakan tabir surya broad-spectrum SPF 30+ / PA++++ setiap pagi. Lakukan patch-test 24 jam sebelum pemakaian produk baru.</span>
+            </div>
+          </div>
+
+          <!-- Foundation Pigment Matcher -->
+          <div class="formulation-card glass-panel">
+            <div class="card-badge">Formulasi Pigmen Dekoratif</div>
+            <h3>💄 Rasio Pigmen Dasar Foundation</h3>
+            <p class="subtitle">Perhitungan proporsi pigmen mineral (% b/b) sesuai spektrum serapan skintone & undertone Anda:</p>
+            
+            <div class="pigment-bars" id="pigment-bars-container">
+              <!-- Injected via JS -->
+            </div>
+
+            <div class="undertone-guide-box">
+              <h4>Panduan Memilih Foundation di Toko:</h4>
+              <p id="foundation-store-guide">Pilih shade berlabel Neutral (N). Hindari foundation yang terlalu pink atau terlalu oranye.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Optional Skin Type Verification Quiz -->
+      <div class="quiz-panel glass-panel">
+        <div class="quiz-header">
+          <span class="quiz-icon">📝</span>
+          <div>
+            <h4>Verifikasi Tambahan: Kuesioner Cepat Jenis Kulit</h4>
+            <p>Bantu tingkatkan akurasi estimasi jenis kulit dengan menjawab 2 pertanyaan berikut:</p>
+          </div>
+        </div>
+        <div class="quiz-questions">
+          <div class="quiz-q">
+            <label>1. Bagaimana rasa kulit Anda 30 menit setelah mencuci wajah tanpa pelembap?</label>
+            <select id="quiz-tightness" class="quiz-select">
+              <option value="normal">Normal / Nyaman, tidak tertarik</option>
+              <option value="tight">Terasa kencang / tertarik / bersisik (Kering)</option>
+              <option value="oily">Cepat berminyak di seluruh wajah (Berminyak)</option>
+              <option value="combo">Berminyak di dahi & hidung, tetapi pipi normal/kering (Kombinasi)</option>
+            </select>
+          </div>
+          <div class="quiz-q">
+            <label>2. Kondisi kilau wajah di siang hari (sekitar pukul 13.00):</label>
+            <select id="quiz-shine" class="quiz-select">
+              <option value="mid_normal">Sedikit kilau wajar alami</option>
+              <option value="mid_matte">Matte tanpa kilau / cenderung kusam kering</option>
+              <option value="mid_oily">Sangat berkilau dan membutuhkan kertas minyak</option>
+              <option value="mid_tzone">Kilau terutama berpusat di area T-zone (Dahi & Hidung)</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-secondary btn-sm" id="btn-apply-quiz">Terapkan Penyesuaian Kuesioner</button>
+      </div>
+
+      <!-- Export & Share Action Bar -->
+      <div class="export-bar glass-panel">
+        <div class="export-options">
+          <label class="checkbox-container">
+            <input type="checkbox" id="check-include-photo">
+            <span class="checkmark"></span>
+            Sertakan foto selfie di kartu ekspor (Privasi: Default Mati)
+          </label>
+        </div>
+        <div class="export-buttons">
+          <button class="btn-primary" id="btn-export-png">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Unduh Gambar (PNG 2x HD)
+          </button>
+          <button class="btn-secondary" id="btn-export-pdf">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Unduh Ringkasan (PDF A4)
+          </button>
+          <button class="btn-outline" id="btn-start-over">Analisis Ulang</button>
+        </div>
+      </div>
+
+      <!-- Medical & Academic Disclaimer -->
+      <footer class="app-footer">
+        <p><strong>Pernyataan Privasi & Medis:</strong> Seluruh pemrosesan citra MediaPipe Face Mesh dan perhitungan kolorimetri CIELAB dijalankan 100% pada peramban web perangkat Anda. Foto wajah tidak pernah disimpan, direkam, atau dikirimkan ke server eksternal mana pun.</p>
+        <p>Aplikasi ini dikembangkan untuk tujuan panduan kosmetik, edukasi farmasetik, dan estetika personal color. Hasil bukan merupakan diagnosis medis dermatologi. Konsultasikan dengan dokter spesialis kulit atau apoteker untuk keluhan inflamasi dan kondisi klinis kulit.</p>
+        <p class="copyright">© 2026 SkinPalette (DermaTone AI™ Engine). Lisensi MIT.</p>
+      </footer>
+
+    </section>
+
+  </main>
+
+  <!-- Modal Swatch Details -->
+  <div class="modal-backdrop" id="swatch-modal" style="display:none;">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <div class="modal-swatch-badge" id="modal-swatch-box"></div>
+        <div>
+          <h3 id="modal-color-name">Coral #FF7F6B</h3>
+          <span class="modal-color-hex" id="modal-color-hex">#FF7F6B</span>
+        </div>
+        <button class="btn-close-modal" id="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>Saran Penempatan & Penggunaan:</h4>
+        <div class="usage-grid">
+          <div class="usage-item">
+            <span class="usage-icon">👗</span>
+            <strong>Busana / Hijab:</strong>
+            <p id="modal-usage-fashion">Sangat cocok untuk pakaian atasan, gaun, kemeja, atau warna hijab utama dekat wajah.</p>
+          </div>
+          <div class="usage-item">
+            <span class="usage-icon">💄</span>
+            <strong>Lipstik:</strong>
+            <p id="modal-usage-lips">Cocok untuk warna riasan bibir sehari-hari maupun semi-formal.</p>
+          </div>
+          <div class="usage-item">
+            <span class="usage-icon">🌸</span>
+            <strong>Blush On:</strong>
+            <p id="modal-usage-blush">Menampilkan rona pipi segar berseri alami.</p>
+          </div>
+          <div class="usage-item">
+            <span class="usage-icon">✨</span>
+            <strong>Eyeshadow:</strong>
+            <p id="modal-usage-eyes">Aksen kelopak mata yang harmonis dengan undertone Anda.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
