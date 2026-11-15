@@ -1,11 +1,11 @@
 # 📋 Dokumen Breakdown Tugas (Work Breakdown Structure)
-## Proyek: Aura Color Match (Cosmetic AI)
-### Analisis Jenis Kulit, Skintone, Undertone, Personal Color & Formulasi Kosmetik Farmasetik
+## Proyek: SkinPalette (AI Skin & Personal Color Analyzer)
+### Analisis Jenis Kulit, Skintone, Undertone, Personal Color & Formulasi Kosmetik Farmasetik (DermaTone AI)
 
 | Metadata | Keterangan |
 |---|---|
 | **Mata Kuliah** | Farmasi AI |
-| **Repositori GitHub** | [syifhaaulia643-lab/Aura-Color-Match](https://github.com/syifhaaulia643-lab/Aura-Color-Match) |
+| **Repositori GitHub** | [syifhaaulia643-lab/SkinPalette](https://github.com/syifhaaulia643-lab/SkinPalette) |
 | **Target Deliverable** | Aplikasi Web Prototipe Akademik (MVP Streamlit) |
 | **Dokumen Acuan** | [PRD.md](PRD.md) Versi 1.0 |
 | **Status Dokumen** | Rencana Kerja Eksekusi & Pembagian Tugas (Task Breakdown) |
@@ -55,7 +55,7 @@
   - **Status:** Selesai.
 - [x] **WBS 1.3: Konfigurasi Repositori Git & Lingkungan Proyek**
   - **Deskripsi:** Menyiapkan struktur repositori lokal, `.gitignore`, direktori `models/`, dan dependensi `requirements.txt`.
-  - **Deliverable:** Berkas `.gitignore`, `requirements.txt`, `models/README.md`, dan sinkronisasi ke remote GitHub `syifhaaulia643-lab/Aura-Color-Match`.
+  - **Deliverable:** Berkas `.gitignore`, `requirements.txt`, `models/README.md`, dan sinkronisasi ke remote GitHub `syifhaaulia643-lab/SkinPalette`.
   - **Status:** Selesai.
 
 ---

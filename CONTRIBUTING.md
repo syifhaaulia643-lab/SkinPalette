@@ -1,6 +1,6 @@
 # Panduan Kontribusi (Contributing Guidelines)
 
-Terima kasih atas minat Anda untuk berkontribusi pada pengembangan **Aura Color Match (Cosmetic AI)**! Proyek ini dikembangkan dalam lingkup riset dan praktikum mata kuliah **Farmasi AI**.
+Terima kasih atas minat Anda untuk berkontribusi pada pengembangan **SkinPalette (AI Skin & Personal Color Analyzer - DermaTone AI)**! Proyek ini dikembangkan dalam lingkup riset dan praktikum mata kuliah **Farmasi AI**.
 
 ---
 
@@ -11,8 +11,8 @@ Terima kasih atas minat Anda untuk berkontribusi pada pengembangan **Aura Color 
 
 2. **Clone Fork Anda:**
    ```bash
-   git clone https://github.com/syifhaaulia643-lab/Aura-Color-Match.git
-   cd Aura-Color-Match
+   git clone https://github.com/syifhaaulia643-lab/SkinPalette.git
+   cd SkinPalette
    ```
 
 3. **Buat Branch Fitur Baru:**

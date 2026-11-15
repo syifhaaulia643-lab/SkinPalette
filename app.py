@@ -1,6 +1,7 @@
 """
-Cosmetic AI: Skin Type, Skintone, Undertone & Personal Color Analyzer
-Aplikasi Web Prototipe Akademik - Mata Kuliah Farmasi AI
+SkinPalette: AI Skin & Personal Color Analyzer
+Engine: DermaTone AI (CIELAB Colorimetry, Face Mesh & Cosmetic Formulation)
+Aplikasi Web Prototipe - Mata Kuliah Farmasi AI
 Platform: Streamlit, OpenCV, MediaPipe Face Mesh, NumPy, (Opsional) TensorFlow/Keras
 """
 
@@ -20,7 +21,7 @@ import streamlit as st
 # ==============================================================================
 
 st.set_page_config(
-    page_title="Aura Color Match - Cosmetic AI & Formulasi Farmasi",
+    page_title="SkinPalette - AI Skin & Personal Color Analyzer",
     page_icon="✨",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -1044,8 +1045,8 @@ def render_sidebar() -> Dict[str, Any]:
     st.sidebar.markdown(
         """
         <div style="font-size: 0.76rem; color: #64748b; line-height: 1.4;">
-        <b>Aura Color Match v1.0 (MVP)</b><br>
-        Cosmetic AI - Farmasi AI<br>
+        <b>SkinPalette v1.0 (MVP)</b><br>
+        DermaTone AI - Farmasi AI<br>
         Ruang Warna: CIELAB (D65)<br>
         Metode Deteksi: MediaPipe Face Mesh
         </div>
@@ -1082,10 +1083,10 @@ def main():
         """
         <div class="main-header">
             <h1 style="margin:0; font-size:2.1rem; color:#1e293b; font-weight:800;">
-                ✨ Aura Color Match: Analisis Warna Kulit & Rekomendasi Formulasi Farmasi
+                ✨ SkinPalette: AI Skin & Personal Color Analyzer
             </h1>
             <p style="margin:6px 0 0 0; color:#475569; font-size:1.05rem;">
-                Cosmetic AI: Analisis Kuantitatif CIELAB (Skintone, Undertone, Personal Color) & Jenis Kulit untuk Perancangan Kosmetik Farmasetik.
+                DermaTone AI: Analisis Kuantitatif CIELAB (Skintone, Undertone, Personal Color) & Jenis Kulit untuk Perancangan Kosmetik Farmasetik.
             </p>
         </div>
         """,
